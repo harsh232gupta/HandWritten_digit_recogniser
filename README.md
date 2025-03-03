@@ -1,49 +1,19 @@
-# Handwritten Digit Recognition System Using Neural Networks
+## Handwritten Digit Recognition System using Neural Networks
 
-This project implements a handwritten digit recognition system using a neural network model, trained on the MNIST dataset.
+I developed a Handwritten Digit Recognition system using neural networks with the MNIST dataset. The dataset was split into three parts:
 
-## Code
+1. **Training dataset**
+2. **Testing dataset**
+3. **Cross-validation dataset**
 
-```python
-# Import necessary libraries
-import tensorflow as tf
-from tensorflow.keras import layers, models
-from tensorflow.keras.datasets import mnist
-from tensorflow.keras.utils import to_categorical
-import numpy as np
+The data was normalized using **mean normalization** and flattened into a single-dimensional array.
 
-# Load the MNIST dataset
-(x_train, y_train), (x_test, y_test) = mnist.load_data()
+The neural network architecture consisted of three layers:
 
-# Normalize the data using mean normalization
-x_train = (x_train / 255.0) - 0.5
-x_test = (x_test / 255.0) - 0.5
+1. **First layer**: 120 units with ReLU activation
+2. **Second layer**: 40 units with ReLU activation
+3. **Output layer**: 10 units with a linear activation function
 
-# Flatten the data to a single-dimensional array
-x_train = x_train.reshape(x_train.shape[0], -1)
-x_test = x_test.reshape(x_test.shape[0], -1)
+The model used the **SparseCategoricalCrossentropy** loss function with `from_logits=True` for improved numerical stability.
 
-# Convert labels to sparse categorical format
-y_train = to_categorical(y_train, 10)
-y_test = to_categorical(y_test, 10)
-
-# Build the model
-model = models.Sequential()
-
-# Add layers to the model
-model.add(layers.Dense(120, activation='relu', input_shape=(x_train.shape[1],)))
-model.add(layers.Dense(40, activation='relu'))
-model.add(layers.Dense(10, activation='linear'))  # Output layer with 10 units (one for each class)
-
-# Compile the model with Sparse Categorical Crossentropy loss function
-model.compile(optimizer='adam', loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True), metrics=['accuracy'])
-
-# Train the model
-model.fit(x_train, y_train, epochs=10, batch_size=64, validation_split=0.2)
-
-# Evaluate the model on the test data
-test_loss, test_acc = model.evaluate(x_test, y_test)
-print(f"Test accuracy: {test_acc * 100:.2f}%")
-
-# Save the trained model
-model.save('digit_recognition_model.h5')
+Various **regularization parameters** were tested to maintain a balance between high bias and high variance.
